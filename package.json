@@ -1,0 +1,91 @@
+{
+  "name": "rtl-doctor",
+  "version": "0.1.0",
+  "description": "Find and fix right-to-left bugs in React, Tailwind and CSS: physical classes and properties, Arabic letters in Persian text, and missing fa-IR locales. ESLint plugin plus a zero-config CLI.",
+  "license": "MIT",
+  "author": "Amirjaz",
+  "homepage": "https://github.com/Amirjaz/rtl-doctor#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Amirjaz/rtl-doctor.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Amirjaz/rtl-doctor/issues"
+  },
+  "keywords": [
+    "rtl",
+    "right-to-left",
+    "bidi",
+    "persian",
+    "farsi",
+    "arabic",
+    "i18n",
+    "tailwind",
+    "tailwindcss",
+    "logical-properties",
+    "css",
+    "react",
+    "nextjs",
+    "eslint",
+    "eslintplugin",
+    "eslint-plugin",
+    "linter",
+    "codemod"
+  ],
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "rtl-doctor": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "!dist/**/*.test.*"
+  ],
+  "engines": {
+    "node": "^20.19.0 || ^22.13.0 || >=24"
+  },
+  "packageManager": "pnpm@10.13.1",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "check:package": "publint --strict && attw --pack . --profile esm-only",
+    "check": "pnpm typecheck && pnpm lint && pnpm test && pnpm build && pnpm check:package",
+    "prepublishOnly": "pnpm check"
+  },
+  "dependencies": {
+    "@typescript-eslint/parser": "^8.72.2",
+    "eslint": "^10.14.0",
+    "ignore": "^7.0.14",
+    "postcss": "^8.5.32",
+    "postcss-scss": "^4.0.9",
+    "tinyglobby": "^0.2.17"
+  },
+  "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.5",
+    "@eslint/js": "^10.0.1",
+    "@tailwindcss/node": "4.3.5",
+    "@types/node": "^20.19.0",
+    "@typescript-eslint/utils": "^8.72.2",
+    "@vitest/coverage-v8": "5.1.0",
+    "publint": "^0.3.25",
+    "tailwindcss": "4.3.5",
+    "tailwindcss3": "npm:tailwindcss@3.4.19",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.72.2",
+    "vitest": "5.1.0"
+  }
+}

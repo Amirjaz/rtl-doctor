@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Node ${{ matrix.node }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        node: [20, 22, 24]
+        include:
+          - os: windows-latest
+            node: 24
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm test
+      - run: pnpm build
+      - run: pnpm check:package
+      - name: CLI smoke test (built package on the fixture app)
+        run: |
+          app="$RUNNER_TEMP/app"
+          cp -r test/fixtures/next-app "$app"
+          set +e
+          node dist/cli.js "$app"; found=$?
+          node dist/cli.js "$app" --fix; fixed=$?
+          node dist/cli.js "$app" --format json > "$RUNNER_TEMP/after.json"; after=$?
+          set -e
+          echo "before=$found fix=$fixed after=$after"
+          test "$found" = 1   # errors found
+          test "$after" = 0   # only warnings (suggestions) remain after --fix
+          node -e 'const r=require(process.argv[1]); if (r.findings.some(f=>f.severity==="error")) process.exit(1)' "$RUNNER_TEMP/after.json"
+
+  eslint9:
+    name: Rules on ESLint 9
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm add eslint@^9.39.0
+      - run: pnpm vitest run test/rules test/plugin.test.ts

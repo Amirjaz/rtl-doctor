@@ -1,0 +1,43 @@
+rtl-doctor test  Persian (app/layout.tsx sets lang="fa"), right-to-left (app/layout.tsx sets dir="rtl"), Tailwind 4.3, 7 files
+
+app/globals.css
+  5:3      error    `right` is physical, which does not mirror with the text direction; use `inset-inline-start`, which looks the same in this right-to-left layout.  css-logical [fix]
+  6:3      error    `margin-left` is physical, which does not mirror with the text direction; use `margin-inline-end`, which looks the same in this right-to-left layout.  css-logical [fix]
+  7:3      error    `text-align: left` is physical, which does not mirror with the text direction; use `text-align: end`, which looks the same in this right-to-left layout.  css-logical [fix]
+  11:3     error    `pl-4` sets padding-left, which does not mirror with the text direction; use `pe-4` (padding-inline-end), which looks the same in this right-to-left layout.  tailwind-logical [fix]
+  11:3     error    `rounded-r-md` sets the right corner radii, which does not mirror with the text direction; use `rounded-s-md` (border-start-start-radius and border-end-start-radius), which looks the same in this right-to-left layout.  tailwind-logical [fix]
+  15:3     warning  `padding: 0 1rem 0 0` sets left and right differently, so it does not mirror with the text direction; use `padding-block: 0; padding-inline: 1rem 0`.  css-shorthand
+  16:3     error    `border-left` is physical, which does not mirror with the text direction; use `border-inline-end`, which looks the same in this right-to-left layout.  css-logical [fix]
+
+app/page.tsx
+  6:54     error    `rtl:space-x-reverse` undoes the RTL flip in Tailwind v4, where space-x and divide-x already use logical properties; remove it.  tailwind-logical [fix]
+  7:24     error    `text-left` sets text-align: left, which does not mirror with the text direction; use `text-end` (text-align: end), which looks the same in this right-to-left layout.  tailwind-logical [fix]
+  7:43     error    `ml-2` sets margin-left, which does not mirror with the text direction; use `me-2` (margin-inline-end), which looks the same in this right-to-left layout.  tailwind-logical [fix]
+  7:57     error    Persian text uses Arabic kaf ك (U+0643) instead of Persian ک (U+06A9); search and sorting treat them as different letters.  persian-chars [fix]
+  9:21     error    `mr-4` sets margin-right, which does not mirror with the text direction; use `ms-4` (margin-inline-start), which looks the same in this right-to-left layout.  tailwind-logical [fix]
+  9:28     error    Persian text uses Arabic yeh ي (U+064A) instead of Persian ی (U+06CC); search and sorting treat them as different letters.  persian-chars [fix]
+  9:34     warning  `toLocaleString()` without a locale uses the server's locale during SSR and the browser's on the client (hydration mismatch, Latin digits, wrong Persian sort order); pass 'fa-IR'.  intl-locale [suggestion]
+  10:13    error    Persian text uses Arabic yeh ي (U+064A) instead of Persian ی (U+06CC); search and sorting treat them as different letters.  persian-chars [fix]
+  10:20    warning  `toLocaleDateString()` without a locale uses the server's locale during SSR and the browser's on the client (hydration mismatch, Latin digits, wrong Persian sort order); pass 'fa-IR'.  intl-locale [suggestion]
+  11:67    error    Persian text uses Arabic yeh ي (U+064A) instead of Persian ی (U+06CC); search and sorting treat them as different letters.  persian-chars [fix]
+  13:35    error    `text-left` sets text-align: left, which does not flip in RTL; use `text-start` (text-align: start).  tailwind-logical [fix]
+  13:45    error    `pl-3` sets padding-left, which does not flip in RTL; use `ps-3` (padding-inline-start).  tailwind-logical [fix]
+  14:21    error    Persian text uses Arabic yeh ي (U+064A) instead of Persian ی (U+06CC); search and sorting treat them as different letters.  persian-chars [fix]
+
+components/Card.tsx
+  5:25     error    `rounded-l-lg` sets the left corner radii, which does not mirror with the text direction; use `rounded-e-lg` (border-start-end-radius and border-end-end-radius), which looks the same in this right-to-left layout.  tailwind-logical [fix]
+  5:38     error    `border-l-4` sets the left border, which does not mirror with the text direction; use `border-e-4` (border-inline-end), which looks the same in this right-to-left layout.  tailwind-logical [fix]
+  5:66     error    `pl-8` sets padding-left, which does not mirror with the text direction; use `pe-8` (padding-inline-end), which looks the same in this right-to-left layout.  tailwind-logical [fix]
+  5:76     error    `float-right` sets float: right, which does not mirror with the text direction; use `float-start` (float: inline-start), which looks the same in this right-to-left layout.  tailwind-logical [fix]
+
+lib/format.ts
+  1:73     warning  `localeCompare()` without a locale uses the server's locale during SSR and the browser's on the client (hydration mismatch, Latin digits, wrong Persian sort order); pass 'fa-IR'.  intl-locale [suggestion]
+  5:22     warning  `Intl.NumberFormat` without a locale uses the server's locale during SSR and the browser's on the client (hydration mismatch, Latin digits, wrong Persian sort order); pass 'fa-IR'.  intl-locale [suggestion]
+
+messages/fa.json
+  3:23     error    Persian text uses Arabic kaf ك (U+0643) instead of Persian ک (U+06A9); search and sorting treat them as different letters.  persian-chars [fix]
+  4:15     error    Persian text uses Arabic yeh ي (U+064A) instead of Persian ی (U+06CC); search and sorting treat them as different letters.  persian-chars [fix]
+
+28 problems (23 errors, 5 warnings)
+23 can be fixed with rtl-doctor --fix.
+5 need a human decision (suggestions show up in your editor with the ESLint plugin).

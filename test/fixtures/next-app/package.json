@@ -1,0 +1,11 @@
+{
+  "name": "fixture-next-app",
+  "private": true,
+  "dependencies": {
+    "next": "16.0.0",
+    "react": "19.0.0"
+  },
+  "devDependencies": {
+    "tailwindcss": "^4.3.0"
+  }
+}

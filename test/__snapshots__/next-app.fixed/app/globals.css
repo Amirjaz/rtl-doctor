@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+.badge {
+  position: absolute;
+  inset-inline-start: 0.5rem;
+  margin-inline-end: 4px;
+  text-align: end;
+}
+
+.btn {
+  @apply pe-4 rounded-s-md;
+}
+
+.quote {
+  padding: 0 1rem 0 0;
+  border-inline-end: 3px solid currentColor;
+}
+
+/* rtl:ignore */
+.code {
+  text-align: left;
+  direction: ltr;
+}
