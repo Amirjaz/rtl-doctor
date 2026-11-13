@@ -60,6 +60,14 @@ viewport), the bullets on the service pages jump to the other side of their list
 
 The build succeeded in all three runs.
 
+## Screenshots
+
+![Original, mirror-every-class and rtl-doctor versions of the price table and a bullet list](images/real-site.png)
+
+The price table on `/installments` and the bullet list on `/services`, at phone width
+(390 x 844, 2x), from the three builds. The rtl-doctor screenshots are byte-for-byte equal
+to the originals; the mirror ones are not.
+
 ## Reproduce
 
 ```bash

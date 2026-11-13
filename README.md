@@ -1,12 +1,41 @@
-# rtl-doctor
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Amirjaz/rtl-doctor/main/docs/images/banner.png" alt="rtl-doctor: finds and fixes right-to-left bugs in React, Tailwind and CSS, without moving a pixel" width="100%">
+</p>
 
-Finds the right-to-left bugs in React, Tailwind and CSS code, and fixes the ones that
-have a single correct answer.
+<p align="center">
+  <a href="https://www.npmjs.com/package/rtl-doctor"><img src="https://img.shields.io/npm/v/rtl-doctor?color=0f766e" alt="npm version"></a>
+  <a href="https://github.com/Amirjaz/rtl-doctor/actions/workflows/ci.yml"><img src="https://github.com/Amirjaz/rtl-doctor/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <img src="https://img.shields.io/node/v/rtl-doctor?color=0f766e" alt="Node version">
+  <a href="LICENSE"><img src="https://img.shields.io/npm/l/rtl-doctor?color=0f766e" alt="MIT license"></a>
+  <a href="#فارسی"><img src="https://img.shields.io/badge/%D9%81%D8%A7%D8%B1%D8%B3%DB%8C-README-0f766e" alt="Persian README section"></a>
+</p>
+
+**rtl-doctor** finds the right-to-left bugs in React, Tailwind and CSS code, and fixes the
+ones that have a single correct answer. It is an ESLint plugin and a zero-config CLI:
 
 ```bash
 npx rtl-doctor .          # report, exit code 1 if anything is wrong
 npx rtl-doctor . --fix    # apply the safe fixes
 ```
+
+## See it on a real site
+
+![The same 18 fixes on a production Persian site, done two ways. Mirroring every class moves the prices and the bullets to the wrong side; rtl-doctor leaves the page pixel-identical.](https://raw.githubusercontent.com/Amirjaz/rtl-doctor/main/docs/images/real-site.png)
+
+These are screenshots of a production Persian site (Next.js 16, Tailwind 4.3), rebuilt
+after each fix. The usual approach, mirroring every physical class, moves the prices up
+against the service names and sends the bullets to the far edge (middle). rtl-doctor picks
+the logical side that keeps today's look (right): its screenshots are byte-for-byte equal
+to the originals. Across 9 pages at two screen widths, **0 of 6,058** elements moved,
+against **402** for the mirror mapping. [How this was measured](docs/VERIFICATION.md).
+
+![rtl-doctor's report for that site: 20 problems, 18 fixable, then --fix fixing 18 problems in 8 files](https://raw.githubusercontent.com/Amirjaz/rtl-doctor/main/docs/images/terminal.png)
+
+The report it printed. `BookingWizard.tsx` shows both sides of the rule: `border-l` on
+the right-to-left page becomes `border-e`, while `text-left` inside the `dir="ltr"` phone
+input becomes `text-start`.
+
+## Why it exists
 
 - **Knows which way your app renders.** Fixes keep today's look: in an app with
   `dir="rtl"`, `pl-4` becomes `pe-4`, because there the left side is the inline end. In an
@@ -71,18 +100,9 @@ And the stylesheet:
   }
 
   .quote {
-    padding: 0 1rem 0 0;   /* reported, not fixed: pick margin-block / margin-inline yourself */
+    padding: 0 1rem 0 0;   /* reported, not fixed: the message suggests padding-block / padding-inline */
   }
 ```
-
-## Verified on a real site
-
-On a production Persian Next.js 16 + Tailwind 4.3 site, `--fix` applied 18 layout fixes.
-Rebuilding and measuring 6,058 rendered elements on 9 pages, at desktop and mobile widths,
-found **0** that moved. The same fixes done the mirror-everything way would have moved
-**402** of them on 5 pages: table columns flipped their alignment, list bullets jumped
-sides, the hero image moved. Method, numbers and a script to reproduce them:
-[docs/VERIFICATION.md](docs/VERIFICATION.md).
 
 ## Install
 
@@ -213,6 +233,24 @@ pnpm check       # typecheck, lint, test, build, publint and attw
 `docs/DECISIONS.md` records every design decision and why. `test/fixtures/next-app` is a
 small Persian Next.js app used to test the CLI end to end, including `--fix` output
 snapshots.
+
+<div dir="rtl" lang="fa">
+
+## فارسی
+
+**rtl-doctor** باگ‌های راست‌به‌چپ را در کدهای React، Tailwind و CSS پیدا می‌کند و آن‌هایی را که فقط یک جواب درست دارند، خودکار اصلاح می‌کند. هم افزونهٔ ESLint است و هم یک ابزار خط فرمان که تنظیم نمی‌خواهد.
+
+- **کلاس‌های فیزیکی.** `ml-4`، `pr-6`، `text-left` و `left-0` همیشه به چپ و راستِ واقعی اشاره می‌کنند و با عوض شدن جهت متن جابه‌جا نمی‌شوند. rtl-doctor آن‌ها را به نسخهٔ منطقی (`ms-4`، `pe-6`، `text-start`) تبدیل می‌کند، طوری که ظاهر امروز سایت دقیقاً همان بماند: در صفحهٔ راست‌به‌چپ `pl-4` می‌شود `pe-4`، و داخل یک ورودی `dir="ltr"` (مثل شمارهٔ موبایل) می‌شود `ps-4`. روی یک سایت واقعی، از ۶٬۰۵۸ عنصر حتی یکی هم جابه‌جا نشد؛ ابزارهایی که همه‌چیز را قرینه می‌کنند ۴۰۲ عنصر را جابه‌جا می‌کردند.
+- **تلهٔ Tailwind 4.** در نسخهٔ ۴، `space-x-*` خودش جهت متن را می‌فهمد و `rtl:space-x-reverse` فاصله‌ها را به سمت اشتباه می‌برد. rtl-doctor آن را حذف می‌کند، و در نسخهٔ ۳ که لازم است، اضافه‌اش می‌کند.
+- **«ي» و «ك» عربی در متن فارسی.** شبیه «ی» و «ک» فارسی‌اند ولی برای کامپیوتر حروف دیگری‌اند: کاربری که «کتاب» را جست‌وجو کند، «كتاب» را پیدا نمی‌کند و مرتب‌سازی هم به‌هم می‌ریزد. ارقام عربی (٤٥٦ به‌جای ۴۵۶) هم همین‌طور.
+- **قالب‌بندی بدون locale.** `toLocaleString()` بدون `'fa-IR'` روی سرور و در مرورگر نتیجهٔ متفاوت می‌دهد: خطای hydration در React، ارقام لاتین، و ترتیب الفبایی غلط برای نام‌های فارسی. rtl-doctor پیشنهاد اصلاح می‌دهد ولی خودکار اعمالش نمی‌کند، چون تاریخ‌ها را هم شمسی می‌کند و این تصمیم با خود شماست.
+
+</div>
+
+```bash
+npx rtl-doctor .          # گزارش
+npx rtl-doctor . --fix    # اصلاح خودکار موارد امن
+```
 
 ## License
 

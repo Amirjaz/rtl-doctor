@@ -1,7 +1,12 @@
 import { formatTailwindVersion } from "../core/tailwind-version.js";
 import type { RunResult } from "./run.js";
 
-const useColor = () => process.stdout.isTTY === true && !process.env.NO_COLOR;
+/** Colour on a terminal; NO_COLOR turns it off, FORCE_COLOR (CI logs) turns it on. */
+const useColor = () => {
+  if (process.env.NO_COLOR) return false;
+  if (process.env.FORCE_COLOR !== undefined) return process.env.FORCE_COLOR !== "0";
+  return process.stdout.isTTY === true;
+};
 const paint = (code: number) => (text: string) => (useColor() ? `\u001b[${code}m${text}\u001b[0m` : text);
 const bold = paint(1);
 const dim = paint(2);

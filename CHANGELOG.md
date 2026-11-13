@@ -4,7 +4,7 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
-## 0.1.0 (unreleased)
+## 0.1.0 (2026-11-13)
 
 First release: deterministic rules with autofix, an ESLint plugin and a zero-config CLI.
 
@@ -32,6 +32,7 @@ First release: deterministic rules with autofix, an ESLint plugin and a zero-con
   direction (`dir` on the HTML root), the Tailwind version, and RTLCSS-based projects.
 - `scripts/layout-diff.mjs`: records every rendered element's box on a set of pages and
   compares two recordings, to check that a fix moved nothing.
+- Colour output follows `NO_COLOR` and `FORCE_COLOR` (for CI logs).
 - Direction-neutral code is not reported: symmetric pairs, the `left-1/2 -translate-x-1/2`
   centring idiom, `rtl:` / `ltr:` variants, `[dir]` selectors, `@keyframes`, and RTLCSS
   `/* rtl:ignore */` comments.
