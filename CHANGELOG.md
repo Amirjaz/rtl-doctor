@@ -10,6 +10,11 @@ First release: deterministic rules with autofix, an ESLint plugin and a zero-con
 
 ### Added
 
+- Fixes keep today's look: the logical side comes from the direction an element renders
+  in now (nearest JSX `dir`, a CSS `direction` declaration, the app's `<html dir>`, or
+  `settings.rtlDoctor.direction`), so `pl-4` becomes `pe-4` in an RTL app and `ps-4` in
+  an LTR one. Unknown or dynamic directions are reported with both options and not fixed.
+  Verified on a production site: 0 of 6,058 element boxes moved (`docs/VERIFICATION.md`).
 - `tailwind-logical` ESLint rule: physical Tailwind classes (`ml-*`, `pr-*`, `left-*`,
   `text-left`, `rounded-l*`, `border-l*`, `float-left`, `scroll-ml-*`...) to their logical
   twins, version-aware (`start-*` before Tailwind 4.2, `inset-s-*` from 4.2), plus
@@ -22,9 +27,11 @@ First release: deterministic rules with autofix, an ESLint plugin and a zero-con
   properties and values to logical ones, `@apply` classes, and report-only asymmetric shorthands.
 - Persian message files (`fa.json`, `locales/fa/*.json`) checked by the CLI.
 - `configs.recommended` (layout rules for any RTL app) and `configs.persian`.
-- `npx rtl-doctor [paths] [--fix] [--format json] [--locale] [--no-persian] [--tailwind] [--layout]`,
-  with detection of Persian apps (`lang="fa"`, i18n config, message files), the Tailwind
-  version, and RTLCSS-based projects.
+- `npx rtl-doctor [paths] [--fix] [--format json] [--locale] [--no-persian] [--tailwind] [--direction] [--layout]`,
+  with detection of Persian apps (`lang="fa"`, i18n config, message files), the app's
+  direction (`dir` on the HTML root), the Tailwind version, and RTLCSS-based projects.
+- `scripts/layout-diff.mjs`: records every rendered element's box on a set of pages and
+  compares two recordings, to check that a fix moved nothing.
 - Direction-neutral code is not reported: symmetric pairs, the `left-1/2 -translate-x-1/2`
   centring idiom, `rtl:` / `ltr:` variants, `[dir]` selectors, `@keyframes`, and RTLCSS
   `/* rtl:ignore */` comments.

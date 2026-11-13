@@ -46,4 +46,7 @@ plugin.configs.persian = {
     // A suggestion, not an autofix: adding fa-IR changes digits and switches dates to Jalali.
     "rtl-doctor/intl-locale": ["warn", { locale: "fa-IR" }],
   },
+  // Persian apps render right-to-left, so fixes keep that look. Settings merge deeply, so
+  // a user's own settings.rtlDoctor (tailwindVersion, or direction: "both") still applies.
+  settings: { rtlDoctor: { direction: "rtl" } },
 };

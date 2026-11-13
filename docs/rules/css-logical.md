@@ -7,6 +7,12 @@ use them through `npx rtl-doctor` or the exported `checkCss()` function.
 
 - Autofix: yes. PostCSS keeps every node's whitespace and comments, so only the
   property or value changes.
+- The fix keeps today's look, like [`tailwind-logical`](tailwind-logical.md): in an RTL
+  page `margin-left` becomes `margin-inline-end`. The direction comes from a `direction:`
+  declaration in the rule or an enclosing rule, else the page (the CLI reads the HTML
+  root's `dir`, `--direction` overrides it). With "both", findings are not fixed.
+
+The table shows the LTR twins; in RTL each property takes its mirror's twin.
 
 | Physical | Logical |
 |----------|---------|
@@ -43,6 +49,7 @@ and `border-radius` whose left and right corners differ:
 
 ```css
 .a { margin: 0 8px 0 0; }
-/* `margin: 0 8px 0 0` sets left and right differently, so it does not flip in RTL;
-   use `margin-block: 0; margin-inline: 0 8px`. */
+/* In an LTR page: `margin: 0 8px 0 0` sets left and right differently, so it does not
+   mirror with the text direction; use `margin-block: 0; margin-inline: 0 8px`.
+   In an RTL page the suggestion is `margin-inline: 8px 0`, which looks the same there. */
 ```

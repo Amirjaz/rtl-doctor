@@ -17,7 +17,7 @@ export interface TailwindLogicalOptions {
   prefix?: string;
   /** Overrides the detected Tailwind version, for example "3.4" or "4.2". */
   tailwindVersion?: string;
-  /** The direction the UI renders in today; overrides `settings.rtlDoctor.direction`. Default "ltr". */
+  /** The direction the UI renders in today; overrides `settings.rtlDoctor.direction`. Unset means unknown: no autofix. */
   direction?: Direction;
 }
 
@@ -67,7 +67,9 @@ export const tailwindLogical: TSESLint.RuleModule<MessageId, [TailwindLogicalOpt
     const version =
       parseTailwindVersion(option.tailwindVersion ?? settings.tailwindVersion) ?? detectTailwindVersion(context.cwd);
     const prefix = option.prefix ?? "";
-    const appDirection: Direction = option.direction ?? settings.direction ?? "ltr";
+    // Unset means unknown: a component file cannot see its page's dir, and a guess would
+    // move things, so findings then name both fixes and apply neither.
+    const appDirection: Direction = option.direction ?? settings.direction ?? "both";
     const attributes = new RegExp(option.attributes ?? DEFAULTS.attributes);
     const callees = new Set(option.callees ?? DEFAULTS.callees);
     const tags = new Set(option.tags ?? DEFAULTS.tags);

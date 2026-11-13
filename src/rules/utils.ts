@@ -6,7 +6,10 @@ export const docsUrl = (name: string) => `https://github.com/Amirjaz/rtl-doctor/
 export interface RtlDoctorSettings {
   tailwindVersion?: string | number;
   locale?: string;
-  /** The direction the UI renders in today: "ltr" (default), "rtl", or "both" when it switches at runtime. */
+  /**
+   * The direction the UI renders in today: "ltr", "rtl", or "both" when it switches at
+   * runtime. Unset is treated as "both": findings are reported with both fixes, neither applied.
+   */
   direction?: "ltr" | "rtl" | "both";
 }
 

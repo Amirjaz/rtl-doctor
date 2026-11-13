@@ -8,7 +8,30 @@ right-to-left. Their logical twins (`ms-*`, `ps-*`, `start-*` / `inset-s-*`,
 - Autofix: yes (`--fix`, or "fix all" in the editor)
 - In configs: `recommended`, `persian`
 
+## Which side the fix uses
+
+A fix never changes how the page looks today. The logical twin is chosen for the
+direction the element renders in now:
+
+| Renders in | `pl-4` becomes | `text-left` becomes | `left-0` becomes (4.2+) |
+|------------|----------------|---------------------|-------------------------|
+| LTR | `ps-4` | `text-start` | `inset-s-0` |
+| RTL | `pe-4` | `text-end` | `inset-e-0` |
+| both / unknown | reported with both options, not fixed | | |
+
+The direction is the nearest JSX `dir` attribute on the element or an ancestor in the same
+file (`dir="ltr"` on a phone input wins over an RTL page), else the `direction` option, else
+`settings.rtlDoctor.direction`. `dir="auto"` and `dir={expr}` mean "both". When nothing
+says, the direction is unknown and findings are not fixed: a component file cannot see
+its page. `configs.persian` sets `rtl`; the CLI reads the HTML root's `dir`.
+
+`test/tailwind-compile.test.ts` proves the contract with real Tailwind 3.4 and 4.3: for
+every pair, the replacement resolved under that direction paints exactly the sides the
+original class painted. `docs/VERIFICATION.md` shows the same on a production site.
+
 ## What it rewrites
+
+The table shows the LTR twins; in RTL each class takes its mirror's twin.
 
 | Physical | Logical | Needs Tailwind |
 |----------|---------|----------------|
@@ -26,10 +49,6 @@ right-to-left. Their logical twins (`ms-*`, `ps-*`, `start-*` / `inset-s-*`,
 Variants, `!` (v3 prefix or v4 suffix), negative values and arbitrary values are kept:
 `md:hover:-ml-4` becomes `md:hover:-ms-4`, `pr-[3px]!` becomes `pe-[3px]!`. Below the
 "Needs" version the class is still reported, without a fix.
-
-`test/tailwind-compile.test.ts` compiles every pair above with real Tailwind 3.4 and
-4.3 and checks that the logical class sets exactly the logical twins of the physical
-class's properties.
 
 ## `space-x` and `divide-x` depend on the Tailwind version
 
@@ -69,6 +88,7 @@ Direction-neutral or deliberate code is not reported:
   tags: ["tw"],
   variables: "(class|classes|className|classNames)$", // regex source, case-insensitive
   prefix: "",            // Tailwind v3 prefix, for example "tw-"
-  tailwindVersion: "4.3" // overrides detection
+  tailwindVersion: "4.3", // overrides detection
+  direction: "rtl"       // overrides settings.rtlDoctor.direction: "ltr", "rtl" or "both"
 }]
 ```

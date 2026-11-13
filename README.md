@@ -75,6 +75,15 @@ And the stylesheet:
   }
 ```
 
+## Verified on a real site
+
+On a production Persian Next.js 16 + Tailwind 4.3 site, `--fix` applied 18 layout fixes.
+Rebuilding and measuring 6,058 rendered elements on 9 pages, at desktop and mobile widths,
+found **0** that moved. The same fixes done the mirror-everything way would have moved
+**402** of them on 5 pages: table columns flipped their alignment, list bullets jumped
+sides, the hero image moved. Method, numbers and a script to reproduce them:
+[docs/VERIFICATION.md](docs/VERIFICATION.md).
+
 ## Install
 
 ```bash
@@ -101,19 +110,20 @@ export default [
   {
     settings: {
       rtlDoctor: {
-        direction: "rtl",      // the direction your UI renders in today; default "ltr"
+        direction: "rtl",       // the direction your UI renders in today (persian sets this)
         tailwindVersion: "4.3", // default: detected from the installed tailwindcss
-        locale: "fa-IR",
       },
     },
   },
 ];
 ```
 
-`direction` is what makes the fixes safe. Set it to `rtl` for a right-to-left app, `ltr`
-for a left-to-right one, or `both` when the same code renders in both (then findings are
-reported with the two options and never autofixed). A `dir` attribute on a JSX element
-overrides it for that subtree, so `dir="ltr"` islands are handled on their own.
+`direction` is what makes the fixes safe, so rtl-doctor never guesses it. Set `rtl` for a
+right-to-left app or `ltr` for a left-to-right one. Left unset (or set to `both`, for code
+that renders in both), each finding names the two possible fixes and applies neither.
+`configs.persian` sets `rtl` for you. A `dir` attribute on a JSX element overrides it for
+that subtree, so `dir="ltr"` islands are handled on their own. CommonJS configs load the
+plugin with `require("rtl-doctor").default`.
 
 ## Rules
 

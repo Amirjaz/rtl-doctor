@@ -7,14 +7,17 @@ RuleTester.describe = describe;
 RuleTester.it = it;
 RuleTester.itOnly = it.only;
 
-/** A RuleTester for TSX with a pinned Tailwind version, so results never depend on what is installed. */
+/**
+ * A RuleTester for TSX with a pinned Tailwind version and an LTR page, so results never
+ * depend on what is installed. RTL and unknown directions are tested explicitly.
+ */
 export function ruleTester(tailwindVersion = "4.3") {
   return new RuleTester({
     languageOptions: {
       parser: tsParser,
       parserOptions: { ecmaFeatures: { jsx: true } },
     },
-    settings: { rtlDoctor: { tailwindVersion } },
+    settings: { rtlDoctor: { tailwindVersion, direction: "ltr" } },
   });
 }
 

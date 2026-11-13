@@ -51,6 +51,38 @@ describe("the ESLint plugin", () => {
     ]);
   });
 
+  it("persian fixes keep a right-to-left look, and user settings still merge in", async () => {
+    const eslint = new ESLint({
+      cwd: root,
+      overrideConfigFile: true,
+      fix: true,
+      overrideConfig: [
+        { files: ["**/*.tsx"], languageOptions: { parser: tsParser as Linter.Parser, parserOptions: { ecmaFeatures: { jsx: true } } } },
+        rtlDoctor.configs.persian,
+        { settings: { rtlDoctor: { tailwindVersion: "4.3" } } },
+      ],
+    });
+    const [result] = await eslint.lintText('export const A = () => <p className="pl-2 left-0" />;', { filePath: "a.tsx" });
+    // inset-e-* needs both the persian direction and the user's Tailwind 4.3.
+    expect(result!.output).toBe('export const A = () => <p className="pe-2 inset-e-0" />;');
+  });
+
+  it("recommended never guesses a direction: it names both fixes and applies neither", async () => {
+    const eslint = new ESLint({
+      cwd: root,
+      overrideConfigFile: true,
+      fix: true,
+      overrideConfig: [
+        { files: ["**/*.tsx"], languageOptions: { parser: tsParser as Linter.Parser, parserOptions: { ecmaFeatures: { jsx: true } } } },
+        rtlDoctor.configs.recommended,
+      ],
+    });
+    const code = 'export const A = () => <p className="pl-2" />;';
+    const [result] = await eslint.lintText(code, { filePath: "a.tsx" });
+    expect(result!.output).toBeUndefined();
+    expect(result!.messages[0]!.message).toContain("use `ps-2` if it was designed left-to-right or `pe-2` if right-to-left");
+  });
+
   it("exports the programmatic API", () => {
     expect(typeof run).toBe("function");
     expect(checkCss(".a { margin-left: 1px }").findings).toHaveLength(1);
